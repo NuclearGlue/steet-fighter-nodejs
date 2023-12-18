@@ -1,11 +1,11 @@
 const responseMiddleware = (req, res, next) => {
-  if (res.locals.result) {
-    res.json(res.locals.result);
-  } else if (res.locals.error) {
-    const status = res.locals.error.status || 500;
-    res.status(status).json({ error: res.locals.error.message });
+  if (res.data) {
+    res.status(200).json(res.data);
+  } else if (res.err) {
+    const status = res.err.status || 400;
+    res.status(status).json({ error: 'true', message: res.err });
   } else {
-    next();
+    res.status(404).json({ error: true, message: 'Not Found' });
   }
 };
 

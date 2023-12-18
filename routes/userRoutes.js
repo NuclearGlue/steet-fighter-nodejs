@@ -10,75 +10,89 @@ const router = Router();
 
 // TODO: Implement route controllers for user
 
-router.get('/', async (req, res, next) => {
-  try {
-    const users = await userService.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    next(error); // Pass the error to the error handling middleware
-  }
-});
+router.get(
+  '/',
+  async (req, res, next) => {
+    try {
+      const users = await userService.getAllUsers();
+      res.data = users;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
 // Get a specific user by ID
-router.get('/:id', async (req, res, next) => {
-  try {
-    const userId = req.params.id;
-    const user = await userService.getUserById(userId);
-
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ error: 'User not found' });
+router.get(
+  '/:id',
+  async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const user = await userService.getUserById(userId);
+      res.data = user;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+  responseMiddleware,
+);
 
 // Create a new user
-router.post('/', createUserValid, async (req, res, next) => {
-  try {
-    const newUser = req.body;
-    const createdUser = await userService.createUser(newUser);
-    res.status(201).json(createdUser);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  '/',
+  createUserValid,
+  async (req, res, next) => {
+    try {
+      const newUser = req.body;
+      const createdUser = await userService.createUser(newUser);
+      res.data = createdUser;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
 // Update a user by ID
-router.put('/:id', updateUserValid, async (req, res, next) => {
-  try {
-    const userId = req.params.id;
-    const updatedUser = await userService.updateUser(userId, req.body);
-
-    if (updatedUser) {
-      res.json(updatedUser);
-    } else {
-      res.status(404).json({ error: 'User not found' });
+router.put(
+  '/:id',
+  updateUserValid,
+  async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const updatedUser = await userService.updateUser(userId, req.body);
+      res.data = updatedUser;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+  responseMiddleware,
+);
 
 // Delete a user by ID
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const userId = req.params.id;
-    const deletedUser = await userService.deleteUser(userId);
-
-    if (deletedUser) {
-      res.json({ message: 'User deleted successfully' });
-    } else {
-      res.status(404).json({ error: 'User not found' });
+router.delete(
+  '/:id',
+  async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const deletedUser = await userService.deleteUser(userId);
+      res.data = deletedUser;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Middleware for handling the response format
-router.use(responseMiddleware);
+  },
+  responseMiddleware,
+);
 
 export { router };

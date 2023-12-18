@@ -20,68 +20,77 @@ router.get('/', async (req, res, next) => {
 });
 
 // Get a specific fighter by ID
-router.get('/:id', async (req, res, next) => {
-  try {
-    const fighterId = req.params.id;
-    const fighter = await fighterService.getFighterById(fighterId);
-
-    if (fighter) {
-      res.json(fighter);
-    } else {
-      res.status(404).json({ error: 'Fighter not found' });
+router.get(
+  '/:id',
+  async (req, res, next) => {
+    try {
+      const fighterId = req.params.id;
+      const fighter = await fighterService.getFighterById(fighterId);
+      res.data = fighter;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+  responseMiddleware,
+);
 
 // Create a new fighter
-router.post('/', createFighterValid, async (req, res, next) => {
-  try {
-    const newFighter = req.body;
-    const createdFighter = await fighterService.createFighter(newFighter);
-    res.status(201).json(createdFighter);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  '/',
+  createFighterValid,
+  async (req, res, next) => {
+    try {
+      const newFighter = req.body;
+      const createdFighter = await fighterService.createFighter(newFighter);
+      res.data = createdFighter;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
 // Update a fighter by ID
-router.put('/:id', updateFighterValid, async (req, res, next) => {
-  try {
-    const fighterId = req.params.id;
-    const updatedFighter = await fighterService.updateFighter(
-      fighterId,
-      req.body,
-    );
-
-    if (updatedFighter) {
-      res.json(updatedFighter);
-    } else {
-      res.status(404).json({ error: 'Fighter not found' });
+router.put(
+  '/:id',
+  updateFighterValid,
+  async (req, res, next) => {
+    try {
+      const fighterId = req.params.id;
+      const updatedFighter = await fighterService.updateFighter(
+        fighterId,
+        req.body,
+      );
+      res.data = updatedFighter;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+  responseMiddleware,
+);
 
 // Delete a fighter by ID
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const fighterId = req.params.id;
-    const deletedFighter = await fighterService.deleteFighter(fighterId);
+router.delete(
+  '/:id',
+  async (req, res, next) => {
+    try {
+      const fighterId = req.params.id;
+      const deletedFighter = await fighterService.deleteFighter(fighterId);
 
-    if (deletedFighter) {
-      res.json({ message: 'Fighter deleted successfully' });
-    } else {
-      res.status(404).json({ error: 'Fighter not found' });
+      res.data = deletedFighter;
+    } catch (error) {
+      res.err = error;
+    } finally {
+      next();
     }
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Middleware for handling the response format
-router.use(responseMiddleware);
+  },
+  responseMiddleware,
+);
 
 export { router };

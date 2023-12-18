@@ -1,22 +1,24 @@
-import { Router } from "express";
-import { authService } from "../services/authService.js";
-import { responseMiddleware } from "../middlewares/response.middleware.js";
+import { Router } from 'express';
+import { authService } from '../services/authService.js';
+import { responseMiddleware } from '../middlewares/response.middleware.js';
 
 const router = Router();
 
 router.post(
-  "/login",
-  (req, res, next) => {
+  '/login',
+  async (req, res, next) => {
     try {
-      // TODO: Implement login action (get the user if it exist with entered credentials)
-      res.data = data;
+      const { email, password } = req.body;
+      const user = await authService.login({ email, password });
+
+      res.data = user;
     } catch (err) {
       res.err = err;
     } finally {
       next();
     }
   },
-  responseMiddleware
+  responseMiddleware,
 );
 
 export { router };
