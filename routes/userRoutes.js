@@ -78,7 +78,6 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-// Middleware for handling the response format
 router.use(responseMiddleware);
 
 export { router };
