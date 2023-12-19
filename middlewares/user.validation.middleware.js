@@ -10,10 +10,22 @@ const createUserValid = async (req, res, next) => {
   const users = await userService.getAllUsers();
   const { firstName, lastName, email, phoneNumber, password } = req.body;
 
+  if (Object.keys(req.body).length === 0) {
+    return res
+      .status(400)
+      .json({ error: true, message: 'Body cannot be empty!' });
+  }
+
   if (!isSubset(Object.keys(USER), Object.keys(req.body))) {
     return res
       .status(400)
       .json({ error: true, message: 'No extra fields allowed!' });
+  }
+
+  if (Object.keys(req.body).some(key => key === 'id')) {
+    return res
+      .status(400)
+      .json({ error: true, message: 'Id is not allowed in body' });
   }
 
   if (
