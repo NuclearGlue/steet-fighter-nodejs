@@ -9,13 +9,13 @@ const createFighterValid = (req, res, next) => {
       .json({ error: true, message: 'All fields must be filled' });
   }
 
-  if (!typeof power !== 'number' || !(power >= 1) || !(power <= 100)) {
+  if (typeof power !== 'number' || !(power >= 1) || !(power <= 100)) {
     return res.status(400).json({
       error: true,
       message: 'Power must be a number from 1 to 100',
     });
   }
-  if (!typeof health !== 'number' || !(health >= 1) || !(health <= 120)) {
+  if (typeof health !== 'number' || !(health >= 1) || !(health <= 120)) {
     return res.status(400).json({
       error: true,
       message: 'Health must be a number from 1 to 120',
