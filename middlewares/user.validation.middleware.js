@@ -79,19 +79,47 @@ function isSubset(userModel, reqBody) {
   );
 }
 
-const updateUserValid = (req, res, next) => {
+const updateUserValid = async (req, res, next) => {
   // TODO: Implement validatior for user entity during update
+  const users = await userService.getAllUsers();
   const { firstName, lastName, email, phoneNumber, password } = req.body;
-  if (
-    firstName === '' &&
-    lastName === '' &&
-    email === '' &&
-    phoneNumber === '' &&
-    password === ''
-  ) {
-    return res
-      .status(400)
-      .json({ error: true, message: 'At least one field must be filled' });
+
+  if (Object.values(req.body).some(value => value === '')) {
+    return res.status(400).json({
+      error: true,
+      message: 'At least one field must be filled',
+    });
+  }
+
+  if (email && !emailSchema.test(email)) {
+    return res.status(400).json({
+      error: true,
+      message: 'Email must be only of @gmail.com domain',
+    });
+  }
+  if (phoneNumber && !phoneSchema.test(phoneNumber)) {
+    return res.status(400).json({
+      error: true,
+      message: 'Phone number must be of format +380XXXXXXXXX',
+    });
+  }
+  if (password && password.length < 3) {
+    return res.status(400).json({
+      error: true,
+      message: 'Password must be at least 3 symbols long',
+    });
+  }
+
+  if (users.some(user => user.email === email)) {
+    return res.status(400).json({
+      error: true,
+      message: 'This email already registred',
+    });
+  } else if (users.some(user => user.phoneNumber === phoneNumber)) {
+    return res.status(400).json({
+      error: true,
+      message: 'This phone number already registred',
+    });
   }
   next();
 };

@@ -15,10 +15,10 @@ const createFighterValid = (req, res, next) => {
       message: 'Power must be a number from 1 to 100',
     });
   }
-  if (typeof health !== 'number' || !(health >= 1) || !(health <= 120)) {
+  if (typeof health !== 'number' || !(health >= 80) || !(health <= 120)) {
     return res.status(400).json({
       error: true,
-      message: 'Health must be a number from 1 to 120',
+      message: 'Health must be a number from 80 to 120',
     });
   }
   if (typeof defense !== 'number' || !(defense >= 1) || !(defense <= 10)) {
@@ -35,16 +35,16 @@ const updateFighterValid = (req, res, next) => {
   // TODO: Implement validatior for FIGHTER entity during update
   const { name, health, power, defense } = req.body;
 
-  if (name === '' && health === '' && power === '' && defense === '') {
-    return res
-      .status(400)
-      .json({ error: true, message: 'At least one field must be filled' });
+  if (Object.values(req.body).some(value => value === '')) {
+    return res.status(400).json({
+      error: true,
+      message: 'At least one field must be filled',
+    });
   }
 
   if (
-    (power && typeof power !== 'number') ||
-    !(power >= 1) ||
-    !(power <= 100)
+    power &&
+    (typeof power !== 'number' || !(power >= 1) || !(power <= 100))
   ) {
     return res.status(400).json({
       error: true,
@@ -52,9 +52,8 @@ const updateFighterValid = (req, res, next) => {
     });
   }
   if (
-    (health && typeof health !== 'number') ||
-    !(health >= 1) ||
-    !(health <= 120)
+    health &&
+    (typeof health !== 'number' || !(health >= 80) || !(health <= 120))
   ) {
     return res.status(400).json({
       error: true,
@@ -62,9 +61,8 @@ const updateFighterValid = (req, res, next) => {
     });
   }
   if (
-    (defense && typeof defense !== 'number') ||
-    !(defense >= 1) ||
-    !(defense <= 10)
+    defense &&
+    (typeof defense !== 'number' || !(defense >= 1) || !(defense <= 10))
   ) {
     return res.status(400).json({
       error: true,
